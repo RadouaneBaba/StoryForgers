@@ -3,6 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
 
+
 const poppins = Poppins({
   subsets: ['latin'],
   display: 'swap',
@@ -22,6 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <link rel="icon" type="image/svg+xml" href="/images/hero33.svg" />
       <body className={poppins.className}>
         <div className= "text-slate-300 bg-slate-800">
           <Navbar />

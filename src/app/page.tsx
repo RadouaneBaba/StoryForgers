@@ -13,6 +13,7 @@ export default function Home() {
         </div>
         <div className="m-24">
         <Image
+            className="hidden md:block"
             src="/images/hero33.svg"
             width={700}
             height={700} 
