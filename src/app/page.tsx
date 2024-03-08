@@ -1,10 +1,13 @@
 import HowToPlay from "@/components/howtoplay/HowToPlay";
 import Showcase from "@/components/showcase/Showcase";
+import Navbar from "@/components/navbar/Navbar";
 import Link from "next/link";
 import Image from "next/image";
 export default function Home() {
   return (
     <div>
+      <Navbar />
+      <div className="pt-20"></div>
       <div className="flex justify-between h-screen bg-gradient-to-br from-slate-900 to-amber-800">
         <div className="p-24 w-1/3 m-12">
           <h1 className="text-6xl font-bold text-slate-50">StoryForgers</h1> 
@@ -15,7 +18,7 @@ export default function Home() {
         <Image
             src="/images/hero33.svg"
             width={700}
-            height={700} 
+            height={700}
             alt="hero image example"
           />
           </div>

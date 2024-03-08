@@ -1,7 +1,7 @@
 import {getKindeServerSession} from "@kinde-oss/kinde-auth-nextjs/server";
 import { redirect } from "next/navigation";
-import  Lobby from "@/components/lobby/Lobby"
-export default async function forge() {
+import  GameSetup from "@/components/game_setup/GameSetup"
+export default async function Game({ params } : { params: { room_id: string } }) {
     const {isAuthenticated, getUser} = getKindeServerSession();
 
     if (!(await isAuthenticated())) {
@@ -10,8 +10,8 @@ export default async function forge() {
     const user = await getUser();
     return (
     <div className="h-screen">
-        <div className="text-6xl">Forge route</div>
-        <Lobby user={user} />
+        <div className="text-6xl">Game route</div>
+        <GameSetup room_id={params.room_id} user={user} />
     </div>
     );
 }
