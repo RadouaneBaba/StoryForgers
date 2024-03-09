@@ -26,7 +26,6 @@ export default function RootLayout({
       <link rel="icon" type="image/svg+xml" href="/images/hero33.svg" />
       <body className={poppins.className}>
         <div className= "text-slate-300 bg-slate-800">
-          <Navbar />
           {children}
         </div>
         </body>
