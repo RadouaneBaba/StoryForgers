@@ -1,6 +1,5 @@
 const { createServer } = require('http');
 const { Server } = require('socket.io');
-
 const httpServer = createServer();
 const io = new Server(httpServer, {
     cors: {
@@ -16,7 +15,7 @@ io.on("connection", (socket) => {
     console.log("user connected with id " + socket.id);
     
     socket.on("create", (data, userid) => {
-        let room_name = data.storyname + '_' + socket.id;
+        let room_name = socket.id;
         rooms[room_name] = {
             players: {},
             roundlength: data.roundlength,
@@ -26,6 +25,7 @@ io.on("connection", (socket) => {
             curr: 0,
             story: '',
             turns: [],
+            rounds: 0,
         }
     });
     socket.on("join_room", (room_name, user) => {
@@ -49,12 +49,17 @@ io.on("connection", (socket) => {
         io.to(room_id).emit("started", true);
         io.to(room_id).emit("nextturn", rooms[room_id]);
     });
-    
+
+    socket.on("getrooms", () => {
+        io.emit("sendrooms", rooms);
+    });
+
     socket.on("writing", (text, room_id) => {  
         io.to(room_id).emit("write", text);
     });
     
     socket.on("endturn", (room_id, text) => {
+        rooms[room_id].rounds++;
         const writers = rooms[room_id].turns;
         console.log(writers.length);
         let currturn = rooms[room_id].curr;
@@ -64,6 +69,12 @@ io.on("connection", (socket) => {
         io.to(room_id).emit("nextturn", rooms[room_id]);
 
     });
+
+    socket.on("endGame", room_id => {
+        console.log("endGame", room_id);
+        delete rooms[room_id];
+        io.to(room_id).emit("quitgame");
+    })
     socket.on("disconnect", () => {
         /*let room;
         let room_name;

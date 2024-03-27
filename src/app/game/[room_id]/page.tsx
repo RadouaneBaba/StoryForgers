@@ -10,7 +10,6 @@ export default async function Game({ params } : { params: { room_id: string } })
     const user = await getUser();
     return (
     <div className="h-screen">
-        <div className="text-6xl">Game route</div>
         <GameSetup room_id={params.room_id} user={user} />
     </div>
     );

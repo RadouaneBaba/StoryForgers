@@ -1,5 +1,6 @@
-import { serial, text, pgTable, primaryKey } from "drizzle-orm/pg-core";
+import { serial, text, pgTable, primaryKey, timestamp, integer } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
+import { type InferSelectModel, type InferInsertModel } from 'drizzle-orm'
 
 export const users = pgTable("users", {
 	  id: text("id").primaryKey(),
@@ -14,7 +15,11 @@ export const usersRelations = relations(users, ({ many }) => ({
 
 export const stories = pgTable("stories", {
     id: serial("id").primaryKey(),
+    title: text("title").notNull(),
     text: text("text").notNull(),
+    roundLength: integer("round_length").notNull(),
+    rounds: integer("rounds").notNull(),
+    createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const storiesRelations = relations(stories, ({ many }) => ({
@@ -39,4 +44,6 @@ export const storyWritersRelations = relations(storyWriters, ({ one }) => ({
     }),
   }));
   
+
+export type SelectStory = InferSelectModel<typeof stories>
   

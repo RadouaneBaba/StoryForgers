@@ -9,9 +9,11 @@ export default async function forge() {
     }
     const user = await getUser();
     return (
-    <div className="h-screen">
-        <div className="text-6xl">Forge route</div>
-        <Lobby user={user} />
+    <div className="md:h-screen bg-slate-900">
+        <div className="text-3xl sm:text-5xl py-10 text-slate-50 font-semibold text-center">Forge a New Story</div>
+        <div className="flex justify-center items-center">
+            <Lobby user={user} />
+        </div>
     </div>
     );
 }
