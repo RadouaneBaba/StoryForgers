@@ -2,11 +2,14 @@ import Navbar from '@/components/navbar/Navbar';
 import React from 'react';
 import Link from 'next/link';
 import TeamComponent from "@/components/team/team"
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
-export default function About() {
+export default async function About() {
+    const { getUser } = getKindeServerSession();
+    const user = await getUser();
   return (
     <>
-      <Navbar/>
+      <Navbar user={user}/>
       <div
         className="relative overflow-hidden rounded-lg bg-cover bg-no-repeat p-12 text-center"
         style={{
@@ -39,7 +42,7 @@ export default function About() {
       {/* Left side with text */}
       <div className="items-center p-4">
         <h1 className="text-4xl font-bold mb-4 text-center">What it is?</h1>
-        <p className='text-center items-center justify-center'>"Story Forgers was born from the desire to cultivate a vibrant community of passionate storytellers. It serves as a hub for connecting individuals who share a love for crafting compelling narratives, fostering an environment where incredible stories are woven, and where inspiration has the power to transform lives."</p>
+        <p className='text-center items-center justify-center'>&quot;Story Forgers was born from the desire to cultivate a vibrant community of passionate storytellers. It serves as a hub for connecting individuals who share a love for crafting compelling narratives, fostering an environment where incredible stories are woven, and where inspiration has the power to transform lives.&quot;</p>
       </div>
 
       {/* Right side with video */}

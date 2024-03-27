@@ -6,7 +6,7 @@ import { FiAlignJustify } from "react-icons/fi";
 export default function Navbar({user}: {user: KindeUser | null}) {
   return (
 
-    <nav className="top-0 shadow bg-slate-900 md:flex md:items-center md:justify-between fixed w-full h-14 md:h-20">
+    <nav className="top-0 shadow bg-slate-900 md:flex md:items-center md:justify-between fixed w-full h-14 md:h-20 z-20">
 
       {/* Logo and project name */}
       <div className="flex justify-between items-center p-2">
@@ -29,7 +29,7 @@ export default function Navbar({user}: {user: KindeUser | null}) {
           <Link href="#showcase" className="hover:text-slate-100 duration-500">Showcase</Link>
         </li>
         <li className="mx-4 my-6 md:my-0">
-          <Link href="/about" className="hover:text-slate-100 text-xl duration-500">About</Link>
+          <Link href="/about" className="hover:text-slate-100 duration-500">About</Link>
         </li>
       </ul>
 
@@ -44,8 +44,8 @@ export default function Navbar({user}: {user: KindeUser | null}) {
           </div>
         ) : (
 
-            <div className="md:pl-0 pl-5 transition-all ease-in duration-500">
-              <LoginLink className="text-slate-900 bg-slate-200 hover:bg-slate-50 font-bold rounded-md font-[Poppins] duration-500 px-6 py-2 mx-4">Sign in</LoginLink>
+            <div className="md:pl-0 pl-5 transition-all ease-in duration-500 pr-4">
+              <LoginLink className="text-slate-900 bg-slate-200 hover:bg-slate-50 font-bold rounded-md duration-500 px-6 py-2 mx-4">Sign in</LoginLink>
               <RegisterLink className="hover:text-slate-100">Sign up</RegisterLink>
             </div>
         )
