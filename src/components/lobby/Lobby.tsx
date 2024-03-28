@@ -1,12 +1,15 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { socket } from "@/socket";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/dist/types";
 import Create from "../create/Create";
 import JoinGame from "../join_game/JoinGame";
 
 export default function Lobby ({user}: {user: KindeUser | null}) {
     const [join, setJoin] = useState(false);
-    
+    useEffect(() => {
+        if (!socket.connected) socket.connect();
+    }, [])
     return (
     <div className="m-4 md:mt-12">
         <div className="flex">

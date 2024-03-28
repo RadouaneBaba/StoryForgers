@@ -12,45 +12,62 @@ export default function Gameplay ({ room_id, userid }: { room_id: string, userid
     const [room, setRoom] = useState<Room>();
     const [endTurn, setEndTurn] = useState(false);
     const [curr, setCurr] = useState(false);
+    const [time, setTime] = useState(0);
     function passTurn () {
         if (text != '') {
+            setText('');
             setEndTurn(true);
         }
     }
     function endGame () {
-        let rounds = room ? room.rounds : 0;
-        if (rounds >= 3) {
-            publishStory(room);
-            socket.emit("endGame", room_id);
-        }
+        publishStory(room);
+        socket.emit("endGame", room_id);
     }
     useEffect(() => {
         //socket.on("setup", (room) => setRoom(room));
         console.log("gameplay");
         if (endTurn) {
-            setText('');
+            console.log("ended");
             socket.emit("endturn", room_id, text, room_id);
             setEndTurn(false);
         }
+        socket.on("timer", (time) => {
+            setTime(time);
+        });
+        socket.emit("writing", text, room_id);
+        socket.on("write", (inp) => setText(inp));
+        return () => {
+            socket.off("timer");
+            socket.off("write");
+        }
+    }, [endTurn, room_id, text]);
+    
+    useEffect(() => {
+        socket.on("quitgame", () => {
+            router.push('/');
+        });
         socket.on("nextturn", (room) => {
-            setText('');
             setRoom(room);
             if (userid == room?.turns[room?.curr]) setCurr(true);
             else setCurr(false);
         });
-        socket.emit("writing", text, room_id);
-        socket.on("write", (inp) => setText(inp));
-        socket.on("quitgame", () => {
-            router.push('/');
-        });
-    }, [endTurn, room, room_id, text, userid, router]);
 
+        socket.on("timeup", () => {
+            if (userid === room?.turns[room?.curr]) {
+                setText('');
+                setEndTurn(true);
+            }
+        });
+        return () => {
+            socket.off("nextturn");
+            socket.off("timeup");
+            socket.off("quitgame");
+        };
+    }, [userid, room, router]);
+
+    if (!room) return;
     return (
         <div className="h-full">
-            <div className="hidden">
-                <span className="font-bold text-lg md:text-2xl p-2 bg-amber-900 absolute top-5 left-5">{room?.players[room?.turns[room?.curr]]}</span>
-            </div>
-
             <div className="flex justify-center h-full">
                 <div className="flex flex-col justify-between w-4/5 sm:w-2/3 lg:w-3/5">
                     <div className="">
@@ -58,11 +75,17 @@ export default function Gameplay ({ room_id, userid }: { room_id: string, userid
                         <div className="text-center m-4">
                             <span className="text-amber-50 rounded-full font-medium text-md sm:text-2xl px-4 p-2 bg-amber-800">{room?.players[room?.turns[room?.curr]]}</span>
                         </div>
+                        <div className="text-center m-4">
+                            <span className="text-amber-50 my-4 font-semibold">
+                                {`${Math.floor(time / 60)}`.padStart(2, '0')}:
+                                {`${time % 60}`.padStart(2, '0')}
+                            </span>
+                        </div>
                     </div>
                     <div className="h-full relative bg-amber-100 rounded-md rounded-t-none shadow-lg p-4 sm:p-12 sm:text-xl border-4 border-amber-900 text-amber-900 overflow-y-auto">
-                        <div className="">
-                            <p className="">{room?.story}</p>
-                            <p className="">{text}</p>
+                        <div>
+                            <p>{room?.story}</p>
+                            <p>{text}</p>
                         </div>
                         {(room?.owner == userid) && <button onClick={endGame} className="absolute bottom-4 right-2.5 bg-amber-200 rounded-full p-2 px-4 shadow-lg shadow-amber-950/5">End game</button>}
                     </div>

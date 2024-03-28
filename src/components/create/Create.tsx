@@ -21,7 +21,6 @@ export default function Create ({user}: {user: KindeUser | null}) {
     
     useEffect(() => {
         console.log("lobby");
-        socket.connect();
 
         /*return () => {
             console.log("unmounted");

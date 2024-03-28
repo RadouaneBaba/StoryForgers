@@ -21,8 +21,8 @@ export default async function Home() {
         <div className="my-auto mx-20 hidden xl:block">
         <Image
             src="/images/hero33.svg"
-            width={700}
-            height={700}
+            width={800}
+            height={600}
             alt="hero image example"
           />
           </div>

@@ -9,8 +9,7 @@ type Rooms = {
 export default function JoinGame() {
     const [rooms, setRooms] = useState<Rooms>({});
     useEffect(() => {
-        if (!socket.connected) socket.connect();
-        console.log(socket);
+        console.log('joined', socket);
         socket.emit("getrooms");
         socket.on("sendrooms", rooms=>setRooms(rooms));
     }, []);

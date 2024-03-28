@@ -26,7 +26,6 @@ export default function GameSet ({ room_id, user }: { room_id: string; user: Kin
             socket.disconnect();
         }*/
     }, [gameStarted, room_id, user]);
-
     
     if (gameStarted) {
         return <Gameplay room_id={room_id} userid={user?.id}/>;

@@ -10,7 +10,7 @@ const io = new Server(httpServer, {
 
 
 const rooms = {};
-
+const timers = {};
 io.on("connection", (socket) => {
     console.log("user connected with id " + socket.id);
     
@@ -18,7 +18,7 @@ io.on("connection", (socket) => {
         let room_name = socket.id;
         rooms[room_name] = {
             players: {},
-            roundlength: data.roundlength,
+            roundlength: data.roundlength * 60,
             storyname: data.storyname,
             started: false,
             owner: userid,
@@ -27,6 +27,7 @@ io.on("connection", (socket) => {
             turns: [],
             rounds: 0,
         }
+        timers[room_name] = [null, rooms[room_name].roundlength];
     });
     socket.on("join_room", (room_name, user) => {
         if (rooms[room_name].started && !rooms[room_name].players[user?.id]) io.emit("allowed", false);
@@ -46,8 +47,20 @@ io.on("connection", (socket) => {
     
     socket.on("started", (room_id) => {
         if (rooms[room_id].started == false) rooms[room_id].started = true;
+        rooms[room_id].rounds++;
         io.to(room_id).emit("started", true);
         io.to(room_id).emit("nextturn", rooms[room_id]);
+        if (!timers[room_id][0]) {
+            timers[room_id][0] = setInterval(() => {
+                io.to(room_id).emit("timer", timers[room_id][1]);
+                console.log(timers[room_id][1]);
+                timers[room_id][1]--;
+                if (timers[room_id][1] == -1) {
+                    io.to(room_id).emit("timeup");
+                    console.log("emit");
+                }
+              }, 1000);
+        }
     });
 
     socket.on("getrooms", () => {
@@ -59,6 +72,7 @@ io.on("connection", (socket) => {
     });
     
     socket.on("endturn", (room_id, text) => {
+        timers[room_id][1] = rooms[room_id].roundlength;
         rooms[room_id].rounds++;
         const writers = rooms[room_id].turns;
         console.log(writers.length);
@@ -67,14 +81,34 @@ io.on("connection", (socket) => {
         rooms[room_id].story += ' ' + text;
         console.log(rooms[room_id], currturn);
         io.to(room_id).emit("nextturn", rooms[room_id]);
-
     });
+
+    /*socket.on("getTimer", (room_id) => {
+        // countdown
+        let timer;
+        let time = rooms[room_id].roundlength;
+        if (!timer) {
+            timer = setInterval(() => {
+                io.to(room_id).emit("timer", time);
+                console.log(time);
+                socket.on("resetTimer", () => clearInterval(timer));
+                if (time === 0) {
+                    clearInterval(timer);
+    
+                } else {
+                    time--;
+                }
+              }, 1000);
+        }
+          
+    });*/
 
     socket.on("endGame", room_id => {
         console.log("endGame", room_id);
+        clearInterval(timers[room_id][0]);
         delete rooms[room_id];
         io.to(room_id).emit("quitgame");
-    })
+    });
     socket.on("disconnect", () => {
         /*let room;
         let room_name;
