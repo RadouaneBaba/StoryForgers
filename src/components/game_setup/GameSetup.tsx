@@ -20,9 +20,6 @@ export default function GameSet ({ room_id, user }: { room_id: string; user: Kin
             setGameStarted(val);
         });
         /*return () => {
-            console.log("unmounted");
-            //socket.off('write');
-            //socket.off("join_room");
             socket.disconnect();
         }*/
     }, [gameStarted, room_id, user]);

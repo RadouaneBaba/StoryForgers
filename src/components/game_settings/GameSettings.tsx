@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { socket } from "@/socket";
 import { Room } from "@/types/Room";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/dist/types";
-
+import Link from "next/link";
 
 export default function GameSettings ({ room_id, startGame, user }: { room_id: string, startGame: () => void, user: KindeUser | null }) {
     const [room, setRoom] = useState<Room>();
@@ -21,7 +21,8 @@ export default function GameSettings ({ room_id, startGame, user }: { room_id: s
     {
         return (
             <div className="h-screen text-center">
-                <h1 className="text-6xl">You cannot join this lobby</h1>
+                <h1 className="text-5xl font-semibold text-slate-50 p-20">You cannot join this lobby</h1>
+                <Link href="/" className="px-4 p-2 bg-amber-800 text-amber-50 rounded-full my-4">Go back Home</Link>
             </div>
         )
     }

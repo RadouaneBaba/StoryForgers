@@ -83,25 +83,6 @@ io.on("connection", (socket) => {
         io.to(room_id).emit("nextturn", rooms[room_id]);
     });
 
-    /*socket.on("getTimer", (room_id) => {
-        // countdown
-        let timer;
-        let time = rooms[room_id].roundlength;
-        if (!timer) {
-            timer = setInterval(() => {
-                io.to(room_id).emit("timer", time);
-                console.log(time);
-                socket.on("resetTimer", () => clearInterval(timer));
-                if (time === 0) {
-                    clearInterval(timer);
-    
-                } else {
-                    time--;
-                }
-              }, 1000);
-        }
-          
-    });*/
 
     socket.on("endGame", room_id => {
         console.log("endGame", room_id);
@@ -110,6 +91,12 @@ io.on("connection", (socket) => {
         io.to(room_id).emit("quitgame");
     });
     socket.on("disconnect", () => {
+        /*if (rooms.hasOwnProperty(socket.id)) {
+            console.log("endGame", socket.id);
+            clearInterval(timers[socket.id][0]);
+            delete rooms[socket.id];
+            io.to(socket.id).emit("quitgame");
+        }*/
         /*let room;
         let room_name;
         for (const [key, value] of Object.entries(rooms)) {
