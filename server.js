@@ -53,7 +53,6 @@ io.on("connection", (socket) => {
         if (!timers[room_id][0]) {
             timers[room_id][0] = setInterval(() => {
                 io.to(room_id).emit("timer", timers[room_id][1]);
-                console.log(timers[room_id][1]);
                 timers[room_id][1]--;
                 if (timers[room_id][1] == -1) {
                     io.to(room_id).emit("timeup");

@@ -9,12 +9,14 @@ import { BsUpload } from "react-icons/bs";
 export default function Gameplay ({ room_id, userid }: { room_id: string, userid: string | null | undefined }) {
     const router = useRouter();
     const [text, setText] = useState('');
+    const [story, setStory] = useState('');
     const [room, setRoom] = useState<Room>();
     const [endTurn, setEndTurn] = useState(false);
     const [curr, setCurr] = useState(false);
     const [time, setTime] = useState(0);
     function passTurn () {
         if (text != '') {
+            setStory(text);
             setText('');
             setEndTurn(true);
         }
@@ -28,7 +30,7 @@ export default function Gameplay ({ room_id, userid }: { room_id: string, userid
         console.log("gameplay");
         if (endTurn) {
             console.log("ended");
-            socket.emit("endturn", room_id, text, room_id);
+            socket.emit("endturn", room_id, story, room_id);
             setEndTurn(false);
         }
         socket.on("timer", (time) => {
@@ -40,7 +42,7 @@ export default function Gameplay ({ room_id, userid }: { room_id: string, userid
             socket.off("timer");
             socket.off("write");
         }
-    }, [endTurn, room_id, text]);
+    }, [endTurn, room_id, text, story]);
     
     useEffect(() => {
         socket.on("quitgame", () => {
