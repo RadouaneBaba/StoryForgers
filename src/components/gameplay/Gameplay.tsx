@@ -1,13 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { socket } from "@/socket";
 import { Room } from "@/types/Room";
 import { publishStory } from "@/app/actions";
 import { BsUpload } from "react-icons/bs";
 
 export default function Gameplay ({ room_id, userid }: { room_id: string, userid: string | null | undefined }) {
-    const router = useRouter();
     const [text, setText] = useState('');
     const [story, setStory] = useState('');
     const [room, setRoom] = useState<Room>();
@@ -26,7 +24,6 @@ export default function Gameplay ({ room_id, userid }: { room_id: string, userid
         socket.emit("endGame", room_id);
     }
     useEffect(() => {
-        //socket.on("setup", (room) => setRoom(room));
         console.log("gameplay");
         if (endTurn) {
             console.log("ended");
@@ -45,9 +42,6 @@ export default function Gameplay ({ room_id, userid }: { room_id: string, userid
     }, [endTurn, room_id, text, story]);
     
     useEffect(() => {
-        socket.on("quitgame", () => {
-            router.push('/');
-        });
         socket.on("nextturn", (room) => {
             setRoom(room);
             if (userid == room?.turns[room?.curr]) setCurr(true);
@@ -63,9 +57,8 @@ export default function Gameplay ({ room_id, userid }: { room_id: string, userid
         return () => {
             socket.off("nextturn");
             socket.off("timeup");
-            socket.off("quitgame");
         };
-    }, [userid, room, router]);
+    }, [userid, room]);
 
     if (!room) return;
     return (

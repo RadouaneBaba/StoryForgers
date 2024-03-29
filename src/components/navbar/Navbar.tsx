@@ -9,20 +9,6 @@ export default function Navbar({user}: {user: KindeUser | null}) {
 
   const [menuState, setMenuState] = useState(false);
 
-  /*const handleMenuClick = () => {
-    let list = document.querySelector('ul');
-    if (!menuState) {
-      list?.classList.add('top-[30px]');
-      list?.classList.add('opacity-100');
-      setMenuState(true);
-    }
-    else {
-      list?.classList.remove('top-[30px]');
-      list?.classList.remove('opacity-100');
-      setMenuState(false);
-    }
-  };*/
-
   const handleMenuClick = () => {
     setMenuState((menuState) => !menuState);
   };
