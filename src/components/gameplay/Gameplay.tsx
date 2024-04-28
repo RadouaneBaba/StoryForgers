@@ -7,6 +7,7 @@ import { BsUpload } from "react-icons/bs";
 
 export default function Gameplay ({ room_id, userid }: { room_id: string, userid: string | null | undefined }) {
     const [text, setText] = useState('');
+    const [currText, setCurrtext] = useState('');
     const [story, setStory] = useState('');
     const [room, setRoom] = useState<Room>();
     const [endTurn, setEndTurn] = useState(false);
@@ -15,7 +16,7 @@ export default function Gameplay ({ room_id, userid }: { room_id: string, userid
     function passTurn () {
         if (text != '') {
             setStory(text);
-            setText('');
+            setCurrtext('');
             setEndTurn(true);
         }
     }
@@ -33,13 +34,13 @@ export default function Gameplay ({ room_id, userid }: { room_id: string, userid
         socket.on("timer", (time) => {
             setTime(time);
         });
-        socket.emit("writing", text, room_id);
+        socket.emit("writing", currText, room_id);
         socket.on("write", (inp) => setText(inp));
-        return () => {
+        /*return () => {
             socket.off("timer");
-            socket.off("write");
-        }
-    }, [endTurn, room_id, text, story]);
+            socket.off("writing");
+        }*/
+    }, [endTurn, room_id, story, room, currText]);
     
     useEffect(() => {
         socket.on("nextturn", (room) => {
@@ -50,7 +51,7 @@ export default function Gameplay ({ room_id, userid }: { room_id: string, userid
 
         socket.on("timeup", () => {
             if (userid === room?.turns[room?.curr]) {
-                setText('');
+                setCurrtext('');
                 setEndTurn(true);
             }
         });
@@ -88,7 +89,7 @@ export default function Gameplay ({ room_id, userid }: { room_id: string, userid
                         
                         {curr &&
                             <div className="relative mb-4">
-                                <textarea name="text" onChange={(e) => setText(e.target.value)} 
+                                <textarea name="text" onChange={(e) => setCurrtext(e.target.value)} 
                                 className="block w-full resize-none rounded-xl border-2 border-amber-800 bg-amber-50 p-4 pr-20 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-900 sm:text-base"
                                 rows={1} placeholder="Write your part..." required />
                                 <button onClick={passTurn} className="absolute bottom-2 right-2.5 rounded-lg bg-amber-700 p-2 text-sm font-medium text-slate-50 hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-300 sm:text-base">
